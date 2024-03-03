@@ -130,3 +130,11 @@ project-destroy: ## stops and removes both Wordpress and database containers fro
 
 plugin-zip:
 	cd resources/plugin/dev && zip -r ../pr-custom.zip *
+
+# -------------------------------------------------------------------------------------------------
+#  Wordpress Example Plugin
+# -------------------------------------------------------------------------------------------------
+repo-flush: ## clears local git repository cache specially to update .gitignore
+	git rm -rf --cached .
+	git add .
+	git commit -m "fix: cache cleared for untracked files"

@@ -25,5 +25,6 @@ dist-ssr
 *.local
 
 Docs.md
-wordpress-6.4.3.zip
-/resources/plugin/dev-1.0.0
+/resources/plugin
+/resources/theme
+/resources/wordpress
