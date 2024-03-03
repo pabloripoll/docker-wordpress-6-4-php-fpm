@@ -25,6 +25,7 @@ dist-ssr
 *.local
 
 Docs.md
+READ-II.md
 /resources/plugin
 /resources/theme
 /resources/wordpress
