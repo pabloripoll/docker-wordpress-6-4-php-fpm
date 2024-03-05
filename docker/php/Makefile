@@ -94,10 +94,6 @@ stop:
 	cd docker && $(DOCKER_COMPOSE) kill || true
 	cd docker && $(DOCKER_COMPOSE) rm --force || true
 
-stop-db:
-	cd bbdd && $(DOCKER_COMPOSE) kill || true
-	cd bbdd && $(DOCKER_COMPOSE) rm --force || true
-
 restart:
 	$(MAKE) stop start
 
