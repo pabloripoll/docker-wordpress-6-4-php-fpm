@@ -51,6 +51,7 @@ RUN apk add --no-cache \
   ${PHP_V}-xml \
   ${PHP_V}-xmlreader \
   ${PHP_V}-xmlwriter \
+  ${PHP_V}-simplexml \
   ${PHP_V}-zip \
   # Database
   ${PHP_V}-pdo \
