@@ -79,7 +79,7 @@ wordpress-destroy: ## stops and removes the Wordpress PHP container from Docker 
 	cd docker/php && $(MAKE) stop clear
 
 # -------------------------------------------------------------------------------------------------
-#  Wordpress - MariaDB database
+#  Wordpress - MariaDB Database
 # -------------------------------------------------------------------------------------------------
 .PHONY: database-set database-build database-start database-stop database-destroy database-install database-download
 
@@ -109,7 +109,10 @@ database-download: ## Download a copy as .sql file from container to a determine
 # -------------------------------------------------------------------------------------------------
 #  Wordpress Project
 # -------------------------------------------------------------------------------------------------
-.PHONY: project-build project-start project-stop project-destroy
+.PHONY: project-set project-build project-start project-stop project-destroy
+
+project-set: ## sets both Wordpress and database .env files used by docker-compose.yml
+	$(MAKE) wordpress-set database-set
 
 project-build: ## builds both Wordpress and database containers from their Docker images
 	$(MAKE) wordpress-set database-set database-build wordpress-build
@@ -132,7 +135,7 @@ plugin-zip:
 	cd resources/plugin/dev && zip -r ../pr-custom.zip *
 
 # -------------------------------------------------------------------------------------------------
-#  Wordpress Example Plugin
+#  Repository Helper
 # -------------------------------------------------------------------------------------------------
 repo-flush: ## clears local git repository cache specially to update .gitignore
 	git rm -rf --cached .
