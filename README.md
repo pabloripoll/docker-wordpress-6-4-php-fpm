@@ -100,18 +100,36 @@ Directories
 │
 ├── docker
 │   ├── mariadb
+│   │   ├── ...
+│   │   ├── .env.example
+│   │   └── docker-compose.yml
+│   │
 │   └── nginx-php
+│       ├── ...
+│       ├── .env.example
+│       └── docker-compose.yml
 │
 ├── resources
 │   ├── database
+│   │   └── wordpress.sql
+│   │
 │   ├── plugin
+│   │   ├── dev
+│   │   ├── {plugin-version}
+│   │   └── {plugin-version}.zip
+│   │
 │   ├── theme
+│   │   ├── dev
+│   │   ├── {theme-version}
+│   │   └── {theme-version}.zip
+│   │
 │   └── wordpress
+│       └── any file or directory required for the re-build of the wordpress app...
 │
 ├── wordpress
 │   └── application...
 │
-├── .env
+├── .env (must be created manually)
 ├── .env.example
 └── Makefile
 ```
