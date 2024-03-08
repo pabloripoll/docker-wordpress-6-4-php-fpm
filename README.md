@@ -22,28 +22,23 @@ Repository: https://github.com/pabloripoll/docker-wordpress-6-4-php-8.3
 * The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
 * Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
 
-## [![Personal Page](https://pabloripoll.com/files/logo-light-100x300.png)](https://github.com/pabloripoll?tab=repositories)
+*At the moment, this repository does not include other services like message broker or mailing, etc.*
 
+## [![Personal Page](https://pabloripoll.com/files/logo-light-100x300.png)](https://github.com/pabloripoll?tab=repositories)
 
 ## About
 
-The goal of this container image is to provide a start up application with the basic enviroment to deploy a php service running with Nginx and PHP-FPM in a container for Wordpress and another, with a MySQL database to follow the best practices on an easy scenario to understand and modify at development needs.
+The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a start up application with the basic enviroment features to deploy a php service running with Nginx and PHP-FPM in a container for Wordpress and another container with a MySQL database to follow the best practices on an easy scenario to understand and modify at development requirements.
 
-Many repositories use the same internal docker network reflecting an only usage case when production is running on a WebHosting account where all is requirements are already set and running within the same server.
+The configuration for the connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge.
 
-For this reason, I prefer to separate containers as they were different services with one for the application and another for the database.
+To access the containers as client it can be done through localhost:${PORT} bu the connection between containers is through the Host IP.
 
-On this configuration the connection between container are through the IP of the internal network the host *(your computer)* has.
+#### Containers on Windows systems
 
-*This repository does not include other services like message broker or mailing, etc.*
+This project has not been tested on Windows OS neither I can use it to test it. So, I cannot bring much support on it.
 
-## Usage on Windows systems
-
-This project has not been tested on Windows OS neither I use it to test it. So, I cannot bring to you much support on it.
-
-I strongly recommend to use Makefile on Windows: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows
-
-Anyway, using this repository you will needed to find out your PC IP by login as an `administrator user`.
+Anyway, using this repository you will needed to find out your PC IP by login as an `administrator user` to set connection between containers.
 
 ```bash
 C:\WINDOWS\system32>ipconfig /all
@@ -60,13 +55,40 @@ Windows IP Configuration
 
 Take the first ip listed because through it, Wordpress container will connect with database container.
 
+#### Containers on Unix based systems
 
-## # Usage on Unix based systems
-
-Find out your IP on UNIX systems and take the first ip listed
+Find out your IP on UNIX systems and take the first IP listed
 ```bash
 $ hostname -I
 
 191.128.1.41 172.17.0.1 172.20.0.1 172.21.0.1
 ```
+
+#### Docker container for Wordpress configuration
+
+Having the Host IP, open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
+
+```php
+/** The name of the database for WordPress */
+define( 'DB_NAME', 'wordpress' );
+
+/** Database username */
+define( 'DB_USER', 'wordpress' );
+
+/** Database password */
+define( 'DB_PASSWORD', '123456' );
+
+/** Database hostname */
+define( 'DB_HOST', '192.168.1.41:8889' );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8mb4' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
+```
+
+## Automatization usage with Makefile
+
+*I strongly recommend to use Makefile on Windows: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
 
