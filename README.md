@@ -88,10 +88,6 @@ define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 ```
 
-## Automatization with Makefile
-
-*I strongly recommend to use Makefile on Windows: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
-
 ## Content
 
 Directories and main files on a tree architecture description
@@ -134,6 +130,10 @@ Directories and main files on a tree architecture description
 └── Makefile
 ```
 
+## Automatization with Makefile
+
+*I strongly recommend to use Makefile on Windows: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
+
 Makefile recipies
 ```bash
 $ make help
@@ -162,4 +162,73 @@ Makefile  project-start            starts up both Wordpress and database contain
 Makefile  project-stop             stops both Wordpress and database containers but data will not be destroyed
 Makefile  project-destroy          stops and removes both Wordpress and database containers from Docker network destroying their data
 Makefile  repo-flush               clears local git repository cache specially to update .gitignore
+```
+
+### Local machine IP
+
+Checkout local machine IP to set connection between containers
+```bash
+$ make hostname
+
+192.168.1.41
+```
+
+**Before running the project** checkout database connection using a database mysql client and update [wordpress/wp-config.php](wordpress/wp-config.php) as above description.
+
+### Build project
+```bash
+$ make project-build
+
+WORDPRESS docker-compose.yml .env file has been set.
+WORDPRESS_DB docker-compose.yml .env file has been set.
+
+[+] Building 9.1s (10/10) FINISHED                                                                                                                                           docker:default
+ => [mariadb internal] load build definition from Dockerfile                                                                                                                           0.0s
+ => => transferring dockerfile: 1.13kB
+...
+ => => naming to docker.io/library/wp-db:mariadb-15                                                                                                                                    0.0s
+[+] Running 1/2
+ ⠧ Network wp-db_default  Created                                                                                                                                                      0.7s
+ ✔ Container wp-db        Started                                                                                                                                                      0.6s
+[+] Building 49.7s (25/25) FINISHED                                                                                                                                          docker:default
+ => [wordpress internal] load build definition from Dockerfile                                                                                                                         0.0s
+ => => transferring dockerfile: 2.47kB
+...
+=> => naming to docker.io/library/wp-app:php-8.3                                                                                                                                      0.0s
+[+] Running 1/2
+ ⠇ Network wp-app_default  Created                                                                                                                                                     0.8s
+ ✔ Container wp-app        Started
+```
+
+### Run project
+
+```bash
+$ make project-start
+
+[+] Running 1/0
+ ✔ Container wp-db  Running                                                                                                                                                            0.0s
+[+] Running 1/0
+ ✔ Container wp-app  Running
+```
+
+Now it should be available Wordpress by visiting http://localhost:8888/wp-admin/
+
+### Database replace
+
+It can be set a fresh Wordpress database from installation however this repository comes with a database backup with http://localhost:8888 setting
+```bash
+$ make database-replace
+
+WORDPRESS database has been installed.
+```
+- User: admin
+- Password: 123456
+
+### Database backup
+
+When Wordpress project is already in development stage copying a backup is recommended to avoid start again from installation
+```bash
+$ make database-backup
+
+WORDPRESS database has been downloaded.
 ```
