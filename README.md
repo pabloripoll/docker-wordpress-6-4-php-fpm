@@ -88,7 +88,30 @@ define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 ```
 
-## Automatization usage with Makefile
+## Automatization with Makefile
 
 *I strongly recommend to use Makefile on Windows: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
 
+## Content
+
+Directories
+```
+.
+│
+├── docker
+│   ├── mariadb
+│   └── nginx-php
+│
+├── resources
+│   ├── database
+│   ├── plugin
+│   ├── theme
+│   └── wordpress
+│
+├── wordpress
+│   └── application...
+│
+├── .env
+├── .env.example
+└── Makefile
+```
