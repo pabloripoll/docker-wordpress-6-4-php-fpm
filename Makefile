@@ -38,7 +38,7 @@ fix-permission: ## sets project directory permission
 	$(DOCKER_USER) chown -R ${USER}: $(ROOT_DIR)/
 
 ports-check: ## shows this project ports availability on local machine
-	cd docker/php && $(MAKE) port-check
+	cd docker/nginx-php && $(MAKE) port-check
 	cd docker/mariadb && $(MAKE) port-check
 
 # -------------------------------------------------------------------------------------------------
@@ -47,19 +47,19 @@ ports-check: ## shows this project ports availability on local machine
 .PHONY: wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
 
 wordpress-set: ## sets the Wordpress PHP enviroment file to build the container
-	cd docker/php && $(MAKE) env-set
+	cd docker/nginx-php && $(MAKE) env-set
 
 wordpress-build: ## builds the Wordpress PHP container from Docker image
-	cd docker/php && $(MAKE) build
+	cd docker/nginx-php && $(MAKE) build
 
 wordpress-start: ## starts up the Wordpress PHP container running
-	cd docker/php && $(MAKE) up
+	cd docker/nginx-php && $(MAKE) up
 
 wordpress-stop: ## stops the Wordpress PHP container but data won't be destroyed
-	cd docker/php && $(MAKE) stop
+	cd docker/nginx-php && $(MAKE) stop
 
 wordpress-destroy: ## stops and removes the Wordpress PHP container from Docker network destroying its data
-	cd docker/php && $(MAKE) stop clear
+	cd docker/nginx-php && $(MAKE) stop clear
 
 # -------------------------------------------------------------------------------------------------
 #  Wordpress - MariaDB Database
