@@ -42,23 +42,6 @@ ports-check: ## shows this project ports availability on local machine
 	cd docker/mariadb && $(MAKE) port-check
 
 # -------------------------------------------------------------------------------------------------
-#  Docker
-# -------------------------------------------------------------------------------------------------
-.PHONY: docker-ip docker-host
-
-docker-ip:
-	$(DOCKER_USER) docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(DOCKER_NAME)
-
-docker-host:
-	echo ${C_BLU}"Docker Host:"${C_END}; \
-	echo $(shell make docker-ip):$(DOCKER_PORT)
-	echo ${C_BLU}"Local Host:"${C_END}; \
-	echo localhost:$(DOCKER_PORT); \
-	echo 127.0.0.1:$(DOCKER_PORT); \
-	echo ${C_BLU}"Project Host:"${C_END}; \
-	echo $(DOCKER_HOST):$(DOCKER_PORT); \
-
-# -------------------------------------------------------------------------------------------------
 #  Wordpress https://wordpress.org/wordpress-6.4.3.zip
 # -------------------------------------------------------------------------------------------------
 .PHONY: wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
@@ -81,7 +64,7 @@ wordpress-destroy: ## stops and removes the Wordpress PHP container from Docker 
 # -------------------------------------------------------------------------------------------------
 #  Wordpress - MariaDB Database
 # -------------------------------------------------------------------------------------------------
-.PHONY: database-set database-build database-start database-stop database-destroy database-install database-download
+.PHONY: database-set database-build database-start database-stop database-destroy database-replace database-backup
 
 database-set: ## sets the database enviroment file to build the container
 	cd docker/mariadb && $(MAKE) env-set
@@ -98,11 +81,11 @@ database-stop: ## stops the database container but data won't be destroyed
 database-destroy: ## stops and removes the database container from Docker network destroying its data
 	cd docker/mariadb && $(MAKE) stop clear
 
-database-install: ## Copies the .sql file into container selected database
+database-replace: ## replace the build empty database copying the .sql backfile file into the container raplacing the pre-defined database
 	cd docker/mariadb && $(MAKE) sql-install
 	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"installed."${C_END};
 
-database-download: ## Download a copy as .sql file from container to a determined local host directory
+database-backup: ## creates a copy as .sql file from container to a determined local host directory
 	cd docker/mariadb && $(MAKE) sql-backup
 	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"dowloaded."${C_END};
 
