@@ -94,7 +94,7 @@ define( 'DB_COLLATE', '' );
 
 ## Content
 
-Directories
+Directories and main files on a tree architecture description
 ```
 .
 │
