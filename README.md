@@ -133,3 +133,33 @@ Directories and main files on a tree architecture description
 ├── .env.example
 └── Makefile
 ```
+
+Makefile recipies
+```bash
+$ make help
+usage: make [target]
+
+targets:
+Makefile  help                     shows this Makefile help message
+Makefile  hostname                 shows local machine ip
+Makefile  fix-permission           sets project directory permission
+Makefile  ports-check              shows this project ports availability on local machine
+Makefile  wordpress-set            sets the Wordpress PHP enviroment file to build the container
+Makefile  wordpress-build          builds the Wordpress PHP container from Docker image
+Makefile  wordpress-start          starts up the Wordpress PHP container running
+Makefile  wordpress-stop           stops the Wordpress PHP container but data will not be destroyed
+Makefile  wordpress-destroy        stops and removes the Wordpress PHP container from Docker network destroying its data
+Makefile  database-set             sets the database enviroment file to build the container
+Makefile  database-build           builds the database container from Docker image
+Makefile  database-start           starts up the database container running
+Makefile  database-stop            stops the database container but data will not be destroyed
+Makefile  database-destroy         stops and removes the database container from Docker network destroying its data
+Makefile  database-replace         replace the build empty database copying the .sql backfile file into the container raplacing the pre-defined database
+Makefile  database-backup          creates a copy as .sql file from container to a determined local host directory
+Makefile  project-set              sets both Wordpress and database .env files used by docker-compose.yml
+Makefile  project-build            builds both Wordpress and database containers from their Docker images
+Makefile  project-start            starts up both Wordpress and database containers running
+Makefile  project-stop             stops both Wordpress and database containers but data will not be destroyed
+Makefile  project-destroy          stops and removes both Wordpress and database containers from Docker network destroying their data
+Makefile  repo-flush               clears local git repository cache specially to update .gitignore
+```
