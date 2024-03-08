@@ -1,14 +1,25 @@
-# Wordpress 6.4 with PHP FPM 8.3
+# Wordpress 6.4 with PHP FPM
 
 Docker container image for Wordpress development
 
 - [Wordpress 6.4](https://wordpress.org/download/releases/6-4/)
 
-- [PHP-FPM 8.3](https://www.php.net/releases/8.3/en.php)
+- [PHP-FPM 8.3](https://www.php.net/releases/8.3/en.php) - by default
 
 - [Nginx 1.24](https://nginx.org/)
 
 - [Alpine Linux 3.19](https://www.alpinelinux.org/)
+
+
+If it is needed another PHP version it can be set on container [Dockerfile](docker/nginx-php/docker/Dockerfile) modifying the variables
+```Dockerfile
+ARG ALPINE_VERSION=3.19
+ARG PHP_VERSION=8.3
+ARG PHP_ALPINE=83
+
+...
+ENV PHP_V="php83"
+```
 
 Repository: https://github.com/pabloripoll/docker-wordpress-6-4-php-8.3
 
