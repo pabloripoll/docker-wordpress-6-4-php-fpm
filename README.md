@@ -158,15 +158,16 @@ $ make project-build
 WORDPRESS docker-compose.yml .env file has been set.
 WORDPRESS_DB docker-compose.yml .env file has been set.
 
-[+] Building 9.1s (10/10) FINISHED                                                                                                                                           docker:default
+[+] Building 9.1s (10/10) FINISHED                                     docker:default
  => [mariadb internal] load build definition from Dockerfile           0.0s
  => => transferring dockerfile: 1.13kB
 ...
  => => naming to docker.io/library/wp-db:mariadb-15                    0.0s
 [+] Running 1/2
- ⠧ Network wp-db_default  Created                                                                                                                                                      0.7s
- ✔ Container wp-db        Started                                                                                                                                                      0.6s
-[+] Building 49.7s (25/25) FINISHED                                                                                                                                          docker:default
+ ⠧ Network wp-db_default  Created                                      0.7s
+ ✔ Container wp-db        Started                                      0.6s
+
+[+] Building 49.7s (25/25)                                             docker:default
  => [wordpress internal] load build definition from Dockerfile         0.0s
  => => transferring dockerfile: 2.47kB
 ...
