@@ -274,4 +274,6 @@ Notice that both installation database and backup has the database name set on t
 ```bash
 $ make project-set
 
+WORDPRESS docker-compose.yml .env file has been set.
+WORDPRESS_DB docker-compose.yml .env file has been set.
 ```
