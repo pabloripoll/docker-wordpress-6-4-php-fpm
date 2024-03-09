@@ -38,9 +38,15 @@ ports-check: ## shows this project ports availability on local machine
 	cd docker/mariadb && $(MAKE) port-check
 
 # -------------------------------------------------------------------------------------------------
-#  Wordpress https://wordpress.org/wordpress-6.4.3.zip
+#  Wordpress
 # -------------------------------------------------------------------------------------------------
-.PHONY: wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
+.PHONY: wordpress-download wordpress-ssh wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
+
+wordpress-download: ## dowloads the Wordpress zip source into project root
+	curl https://wordpress.org/wordpress-6.4.3.zip -O -J -L
+
+wordpress-ssh: ## enters the Wordpress container shell
+	cd docker/nginx-php && $(MAKE) ssh
 
 wordpress-set: ## sets the Wordpress PHP enviroment file to build the container
 	cd docker/nginx-php && $(MAKE) env-set
@@ -60,7 +66,10 @@ wordpress-destroy: ## stops and removes the Wordpress PHP container from Docker 
 # -------------------------------------------------------------------------------------------------
 #  Wordpress - MariaDB Database
 # -------------------------------------------------------------------------------------------------
-.PHONY: database-set database-build database-start database-stop database-destroy database-replace database-backup
+.PHONY: database-ssh database-set database-build database-start database-stop database-destroy database-replace database-backup
+
+database-ssh: ## enters the database container shell
+	cd docker/mariadb && $(MAKE) ssh
 
 database-set: ## sets the database enviroment file to build the container
 	cd docker/mariadb && $(MAKE) env-set
