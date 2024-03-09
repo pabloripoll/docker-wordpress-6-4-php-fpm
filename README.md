@@ -142,7 +142,8 @@ Directories and main files on a tree architecture description
 
 ## Automation with Makefile
 
-*On Windows - I recommend to use Makefile: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
+*On Windows - I recommend to use Makefile: \
+https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
 
 Makefile recipies
 ```bash
