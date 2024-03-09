@@ -1,4 +1,4 @@
-# Wordpress 6.4 with PHP FPM
+# Wordpress 6.4 with PHP FPM 8+
 
 Docker container image for Wordpress development
 
@@ -100,7 +100,7 @@ Directories and main files on a tree architecture description
 │
 ├── resources
 │   ├── database
-│   │   ├── wordpress.sql
+│   │   ├── wordpress-init.sql
 │   │   └── wordpress-backup.sql
 │   │
 │   ├── plugin
@@ -139,11 +139,13 @@ Makefile  help                     shows this Makefile help message
 Makefile  hostname                 shows local machine ip
 Makefile  fix-permission           sets project directory permission
 Makefile  ports-check              shows this project ports availability on local machine
+Makefile  wordpress-ssh            enters the Wordpress container shell
 Makefile  wordpress-set            sets the Wordpress PHP enviroment file to build the container
 Makefile  wordpress-build          builds the Wordpress PHP container from Docker image
 Makefile  wordpress-start          starts up the Wordpress PHP container running
 Makefile  wordpress-stop           stops the Wordpress PHP container but data will not be destroyed
 Makefile  wordpress-destroy        stops and removes the Wordpress PHP container from Docker network destroying its data
+Makefile  database-ssh             enters the database container shell
 Makefile  database-set             sets the database enviroment file to build the container
 Makefile  database-build           builds the database container from Docker image
 Makefile  database-start           starts up the database container running
@@ -164,7 +166,7 @@ Makefile  repo-flush               clears local git repository cache specially t
 $ make project-build
 
 WORDPRESS docker-compose.yml .env file has been set.
-WORDPRESS_DB docker-compose.yml .env file has been set.
+WORDPRESS DB docker-compose.yml .env file has been set.
 
 [+] Building 9.1s (10/10) FINISHED                                     docker:default
  => [mariadb internal] load build definition from Dockerfile           0.0s
@@ -237,17 +239,21 @@ Now, Wordpress should be available on local machine by visiting [http://localhos
 
 ## Database
 
-Since every time the containers are up and running a fresh Wordpress wizard setup displays on screen, you can continue follow its steps configuring as your project requires the required Wordpress tables or use this repository preset database by executing `$ make database-install`
+Every time the containers are built or up and running it will be like start from a fresh installation, displaying Wordpress wizard on screen.
 
-Follow the next practices recommendation to keep development stages clear and safe.
+So, you can follow the Wordpress Wizard steps to configure the project at requirements *(language, ip and port, etc)* with fresh database tables.
 
-*On first installation* once Wordpres app is running with an admin back-office user set, I recommend to make a database backup a manually saving it as [resources/database/wordpress.sql](resources/database/wordpress.sql) to have a init database for any Docker compose rebuild / restart for next time.
+On he other hand, you can continue using this repository with the pre-set database executing the command `$ make database-install`
 
-The following three commands are very useful for *Continue Development*.
+Follow the next recommendations to keep development stages clear and safe.
+
+*On first installation* once Wordpress app is running with an admin back-office user set, I suggest to make a initialization database backup manually, saving as [resources/database/wordpress-backup.sql](resources/database/wordpress-backup.sql) but renaming as [resources/database/wordpress-init.sql](resources/database/wordpress-init.sql) to have that init database for any Docker compose rebuild / restart on next time.
+
+**The following three commands are very useful for *Continue Development*.**
 
 ### DB Backup
 
-When Wordpress project is already in advanced development stages, making a backup is recommended to avoid start again from installation step, keeping lastest database registers.
+When Wordpress project is already in an advanced development stage, making a backup is recommended to avoid start again from installation step by keeping lastest database registers.
 ```bash
 $ make database-backup
 
@@ -256,7 +262,7 @@ WORDPRESS database backup has been created.
 
 ### DB Install
 
-If it is needed to restart the project from base installation, you can use the init database .sql file to restart at that point in time. Though is not common to use, helps to check and test installation health.
+If it is needed to restart the project from base installation step, you can use the init database .sql file to restart at that point in time. Though is not common to use, helps to check and test installation health.
 ```bash
 $ make database-install
 
@@ -269,19 +275,21 @@ This repository comes with an initialized .sql with a main admin user:
 
 ### DB Replace
 
-Install the latest .sql backup into current development stage.
+Replace the database set on container with the latest .sql backup into current development stage.
 ```bash
 $ make database-replace
 
 WORDPRESS database has been replaced.
 ```
 
-### Note:
+## Notes
 
-Notice that both installation database and backup has the database name set on this main `.env` file to automate processes. If database name changed, remind to update `.env` file a execute as all this file changes:
+- Notice that both files in [resources/database/](resources/database/) have the database name that has been set on the main `.env` file to automate processes.
+
+- Remember that on any change in the main `.env` file will be necessary to execute the following Makefile recipe
 ```bash
 $ make project-set
 
 WORDPRESS docker-compose.yml .env file has been set.
-WORDPRESS_DB docker-compose.yml .env file has been set.
+WORDPRESS DB docker-compose.yml .env file has been set.
 ```
