@@ -11,7 +11,7 @@ Docker container image for Wordpress development
 - [Alpine Linux 3.19](https://www.alpinelinux.org/)
 
 
-If it is needed another PHP version it can be set on container [Dockerfile](docker/nginx-php/docker/Dockerfile) modifying the following variables
+To use a different PHP 8 version the following [Dockerfile](docker/nginx-php/docker/Dockerfile) arguments and variable must be modified:
 ```Dockerfile
 ARG PHP_VERSION=8.3
 ARG PHP_ALPINE=83
@@ -19,7 +19,15 @@ ARG PHP_ALPINE=83
 ENV PHP_V="php83"
 ```
 
-Repository: https://github.com/pabloripoll/docker-wordpress-6-4-php-8.3
+And must be inform to [Supervisor Config](docker/nginx-php/docker/config/supervisord.conf) the FPM version to run.
+```bash
+...
+[program:php-fpm]
+command=php-fpm83 -F
+...
+```
+
+Repository: https://github.com/pabloripoll/docker-wordpress-6.4-php-8
 
 * Built on the lightweight and secure Alpine Linux distribution
 * Multi-platform, supporting AMD4, ARMv6, ARMv7, ARM64
