@@ -220,10 +220,10 @@ define( 'DB_COLLATE', '' );
 $ make project-start
 
 [+] Running 1/0
- ✔ Container wp-db  Running                                                                                                                                                            0.0s
+ ✔ Container wp-db  Running                       0.0s
 [+] Running 1/0
- ✔ Container wp-app  Running
-```
+ ✔ Container wp-app  Running                      0.0s
+ ```
 
 Now, Wordpress should be available on local machine by visiting [http://localhost:8888/index.php](http://localhost:8888/index.php)
 
