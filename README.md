@@ -270,4 +270,8 @@ WORDPRESS database has been replaced.
 
 ### Note:
 
-Notice that both installation database and backup has the database name set on this main `.env` file.
+Notice that both installation database and backup has the database name set on this main `.env` file to automate processes. If database name changed, remind to update `.env` file a execute as all this file changes:
+```bash
+$ make project-set
+
+```
