@@ -223,17 +223,17 @@ Now, Wordpress should be available by visiting [http://localhost:8888/index.php]
 
 ## Database
 
-Since every the containers are up and running, a fresh Wordpress wizard setup is set. So, you can continue to set up a Wordpress configuration as your project requires.
+Since every time the containers are up and running a fresh Wordpress wizard setup displays on screen, you can continue follow its steps configuring as your project requires the required Wordpress tables or use this repository preset database by executing `$ make database-install`
 
-Follow the next process recommendation to keep development stages clear and safe.
+Follow the next practices recommendation to keep development stages clear and safe.
 
-Once Wordpres is up an an admin back-office user set, I recommend to make a database backup a manually saving it as [resources/database/wordpress.sql](resources/database/wordpress.sql) to have a init database for any Docker compose rebuild / restart.
+*On first installation* once Wordpres app is running with an admin back-office user set, I recommend to make a database backup a manually saving it as [resources/database/wordpress.sql](resources/database/wordpress.sql) to have a init database for any Docker compose rebuild / restart for next time.
 
 The following three commands are very useful for CI/CD.
 
 ### DB Backup
 
-When Wordpress project is already in an advanced development stages making a backup is recommended to avoid start again from installation wizard and keep lastest database registers.
+When Wordpress project is already in advanced development stages, making a backup is recommended to avoid start again from installation step, keeping lastest database registers.
 ```bash
 $ make database-backup
 
@@ -242,14 +242,14 @@ WORDPRESS database backup has been created.
 
 ### DB Install
 
-If it is needed to restart project from base, you can use a init database .sql file to start from installation point in time.
+If it is needed to restart the project from base installation, you can use the init database .sql file to restart at that point in time. Though is not common to use, helps to check and test installation health.
 ```bash
 $ make database-install
 
 WORDPRESS database has been installed.
 ```
 
-For this repository, by default comes with a main admin user:
+This repository comes with an initialized .sql with a main admin user:
 - User: admin
 - Password: 123456
 
@@ -261,3 +261,7 @@ $ make database-replace
 
 WORDPRESS database has been replaced.
 ```
+
+### Note:
+
+Notice that both installation database and backup has the database name set on this main `.env` file.
