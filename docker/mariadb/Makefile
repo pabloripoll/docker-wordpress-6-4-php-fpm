@@ -66,19 +66,13 @@ env-set:
 # -------------------------------------------------------------------------------------------------
 #  Container
 # -------------------------------------------------------------------------------------------------
-.PHONY: ssh build install dev up start first stop restart clear
+.PHONY: ssh build dev up first start stop clear restart rebuild
 
 ssh:
 	$(DOCKER_EXEC_TOOLS_APP)
 
 build:
 	cd docker && $(DOCKER_COMPOSE) up --build --no-recreate -d
-
-sql-install:
-	sudo docker exec -i $(PROJECT_DB_CONT) sh -c 'exec mysql $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' < $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME).sql
-
-sql-backup:
-	sudo docker exec $(PROJECT_DB_CONT) sh -c 'exec mysqldump $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' > $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME).sql
 
 dev:
 	echo ${C_YEL}"\"dev\" recipe has not usage in this project"${C_END};
@@ -104,3 +98,17 @@ restart:
 
 rebuild:
 	$(MAKE) stop clear start
+
+# -------------------------------------------------------------------------------------------------
+#  Container
+# -------------------------------------------------------------------------------------------------
+.PHONY: sql-install sql-install sql-backup
+
+sql-install:
+	sudo docker exec -i $(PROJECT_DB_CONT) sh -c 'exec mysql $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' < $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME).sql
+
+sql-replace:
+	sudo docker exec -i $(PROJECT_DB_CONT) sh -c 'exec mysql $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' < $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME)-backup.sql
+
+sql-backup:
+	sudo docker exec $(PROJECT_DB_CONT) sh -c 'exec mysqldump $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' > $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME)-backup.sql

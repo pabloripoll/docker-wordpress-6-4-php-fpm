@@ -85,9 +85,13 @@ database-replace: ## replace the build empty database copying the .sql backfile 
 	cd docker/mariadb && $(MAKE) sql-install
 	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"installed."${C_END};
 
+database-replace: ## replace the build empty database copying the .sql backfile file into the container raplacing the pre-defined database
+	cd docker/mariadb && $(MAKE) sql-replace
+	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"replaced."${C_END};
+
 database-backup: ## creates a copy as .sql file from container to a determined local host directory
 	cd docker/mariadb && $(MAKE) sql-backup
-	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"dowloaded."${C_END};
+	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database "${C_GRN}"backup has been created."${C_END};
 
 # -------------------------------------------------------------------------------------------------
 #  Wordpress Project
