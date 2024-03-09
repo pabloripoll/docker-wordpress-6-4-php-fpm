@@ -81,15 +81,15 @@ database-stop: ## stops the database container but data won't be destroyed
 database-destroy: ## stops and removes the database container from Docker network destroying its data
 	cd docker/mariadb && $(MAKE) stop clear
 
-database-replace: ## replace the build empty database copying the .sql backfile file into the container raplacing the pre-defined database
+database-install: ## installs an initialized database copying the determined .sql file into the container by raplacing it
 	cd docker/mariadb && $(MAKE) sql-install
 	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"installed."${C_END};
 
-database-replace: ## replace the build empty database copying the .sql backfile file into the container raplacing the pre-defined database
+database-replace: ## replaces container database copying the determined .sql file into the container by raplacing it
 	cd docker/mariadb && $(MAKE) sql-replace
 	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"replaced."${C_END};
 
-database-backup: ## creates a copy as .sql file from container to a determined local host directory
+database-backup: ## creates a .sql file from container database to the determined local host directory
 	cd docker/mariadb && $(MAKE) sql-backup
 	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database "${C_GRN}"backup has been created."${C_END};
 
