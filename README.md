@@ -73,30 +73,6 @@ $ hostname -I
 191.128.1.41 172.17.0.1 172.20.0.1 172.21.0.1
 ```
 
-#### Docker container for Wordpress configuration
-
-Having the Host IP, open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
-
-```php
-/** The name of the database for WordPress */
-define( 'DB_NAME', 'wordpress' );
-
-/** Database username */
-define( 'DB_USER', 'wordpress' );
-
-/** Database password */
-define( 'DB_PASSWORD', '123456' );
-
-/** Database hostname */
-define( 'DB_HOST', '192.168.1.41:8889' );
-
-/** Database charset to use in creating database tables. */
-define( 'DB_CHARSET', 'utf8mb4' );
-
-/** The database collate type. Don't change this if in doubt. */
-define( 'DB_COLLATE', '' );
-```
-
 ## Structure
 
 Directories and main files on a tree architecture description
@@ -207,6 +183,30 @@ Checkout local machine IP to set connection between containers using the followi
 $ make hostname
 
 192.168.1.41
+```
+
+#### Docker container for Wordpress configuration
+
+Having the Host IP, open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
+
+```php
+/** The name of the database for WordPress */
+define( 'DB_NAME', 'wordpress' );
+
+/** Database username */
+define( 'DB_USER', 'wordpress' );
+
+/** Database password */
+define( 'DB_PASSWORD', '123456' );
+
+/** Database hostname */
+define( 'DB_HOST', '192.168.1.41:8889' );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8mb4' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
 ```
 
 ## Run the project
