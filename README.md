@@ -62,7 +62,7 @@ Windows IP Configuration
  DNS Suffix Search List. . . . . . : scs.ad.cs.cmu.edu
 ```
 
-Take the first ip listed because through it, Wordpress container will connect with database container.
+Take the first ip listed. Wordpress container will connect with database container using that IP.
 
 #### Containers on Unix based systems
 
