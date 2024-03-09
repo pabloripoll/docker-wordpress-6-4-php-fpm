@@ -159,24 +159,24 @@ WORDPRESS docker-compose.yml .env file has been set.
 WORDPRESS_DB docker-compose.yml .env file has been set.
 
 [+] Building 9.1s (10/10) FINISHED                                                                                                                                           docker:default
- => [mariadb internal] load build definition from Dockerfile                                                                                                                           0.0s
+ => [mariadb internal] load build definition from Dockerfile           0.0s
  => => transferring dockerfile: 1.13kB
 ...
- => => naming to docker.io/library/wp-db:mariadb-15                                                                                                                                    0.0s
+ => => naming to docker.io/library/wp-db:mariadb-15                    0.0s
 [+] Running 1/2
  ⠧ Network wp-db_default  Created                                                                                                                                                      0.7s
  ✔ Container wp-db        Started                                                                                                                                                      0.6s
 [+] Building 49.7s (25/25) FINISHED                                                                                                                                          docker:default
- => [wordpress internal] load build definition from Dockerfile                                                                                                                         0.0s
+ => [wordpress internal] load build definition from Dockerfile         0.0s
  => => transferring dockerfile: 2.47kB
 ...
-=> => naming to docker.io/library/wp-app:php-8.3                                                                                                                                      0.0s
+=> => naming to docker.io/library/wp-app:php-8.3                       0.0s
 [+] Running 1/2
- ⠇ Network wp-app_default  Created                                                                                                                                                     0.8s
+ ⠇ Network wp-app_default  Created                                     0.8s
  ✔ Container wp-app        Started
 ```
 
-**Before running the project** checkout database connection using a database mysql client and update [wordpress/wp-config.php](wordpress/wp-config.php)
+**Before running the project** checkout database connection health using a database mysql client.
 
 Checkout local machine IP to set connection between containers using the following makefile recipe
 ```bash
