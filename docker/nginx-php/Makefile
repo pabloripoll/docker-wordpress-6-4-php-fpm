@@ -60,7 +60,8 @@ env: ## checks if docker .env file exists
 	fi
 
 env-set: ## sets docker .env file
-	echo "COMPOSE_PROJECT_NAME=\"$(DOCKER_CAAS)\"\
+	echo "COMPOSE_PROJECT_ABBR=\"$(DOCKER_ABBR)\"\
+	\nCOMPOSE_PROJECT_NAME=\"$(DOCKER_CAAS)\"\
 	\nCOMPOSE_PROJECT_HOST=$(DOCKER_HOST)\
 	\nCOMPOSE_PROJECT_PORT=$(DOCKER_PORT)\
 	\nCOMPOSE_PROJECT_PATH=\"$(DOCKER_PATH)\"" > ./docker/.env; \
