@@ -41,7 +41,7 @@ The objective of this repository is having a CaaS [Containers as a Service](http
 
 The configuration for the connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge.
 
-To access the containers as client it can be done through localhost:${PORT} bu the connection between containers is through the Host IP.
+To access the containers as client it can be done through `localhost:${PORT}` but the connection between containers is through the `${HOSTNAME}:${PORT}`.
 
 #### Containers on Windows systems
 
