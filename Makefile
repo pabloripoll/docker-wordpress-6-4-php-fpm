@@ -10,11 +10,7 @@ C_END='\033[0m'
 
 include .env
 
-DOCKER_ABBR=$(PROJECT_ABBR)
-DOCKER_HOST=$(PROJECT_HOST)
-DOCKER_PORT=$(PROJECT_PORT)
-DOCKER_NAME=$(PROJECT_CONT)
-DOCKER_PATH=$(PROJECT_PATH)
+DOCKER_TITLE=$(PROJECT_TITLE)
 
 CURRENT_DIR=$(patsubst %/,%,$(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 DIR_BASENAME=$(shell basename $(CURRENT_DIR))
@@ -83,15 +79,15 @@ database-destroy: ## stops and removes the database container from Docker networ
 
 database-install: ## installs an initialized database copying the determined .sql file into the container by raplacing it
 	cd docker/mariadb && $(MAKE) sql-install
-	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"installed."${C_END};
+	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database has been "${C_GRN}"installed."${C_END};
 
 database-replace: ## replaces container database copying the determined .sql file into the container by raplacing it
 	cd docker/mariadb && $(MAKE) sql-replace
-	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database has been "${C_GRN}"replaced."${C_END};
+	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database has been "${C_GRN}"replaced."${C_END};
 
 database-backup: ## creates a .sql file from container database to the determined local host directory
 	cd docker/mariadb && $(MAKE) sql-backup
-	echo ${C_BLU}"$(DOCKER_ABBR)"${C_END}" database "${C_GRN}"backup has been created."${C_END};
+	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database "${C_GRN}"backup has been created."${C_END};
 
 # -------------------------------------------------------------------------------------------------
 #  Wordpress Project

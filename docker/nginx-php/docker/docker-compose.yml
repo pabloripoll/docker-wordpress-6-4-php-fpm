@@ -1,8 +1,8 @@
 version: "3.8"
 
 services:
-  wordpress:
-    image: ${COMPOSE_PROJECT_NAME}:php-8.3
+  prestashop:
+    image: ${COMPOSE_PROJECT_NAME}:${COMPOSE_PROJECT_ABBR}-nginx-php
     pull_policy: never
     build:
       context: ./
@@ -23,3 +23,4 @@ services:
       timeout: 5s
       retries: 5
     tty: true
+    restart: unless-stopped

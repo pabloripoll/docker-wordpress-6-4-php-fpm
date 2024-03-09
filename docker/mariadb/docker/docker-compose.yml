@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mariadb:
-    image: ${COMPOSE_PROJECT_NAME}:mariadb-15
+    image: ${COMPOSE_PROJECT_NAME}:${COMPOSE_PROJECT_ABBR}-mariadb
     pull_policy: never
     build:
       context: ./
