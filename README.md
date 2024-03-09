@@ -11,12 +11,10 @@ Docker container image for Wordpress development
 - [Alpine Linux 3.19](https://www.alpinelinux.org/)
 
 
-If it is needed another PHP version it can be set on container [Dockerfile](docker/nginx-php/docker/Dockerfile) modifying the variables
+If it is needed another PHP version it can be set on container [Dockerfile](docker/nginx-php/docker/Dockerfile) modifying the following variables
 ```Dockerfile
-ARG ALPINE_VERSION=3.19
 ARG PHP_VERSION=8.3
 ARG PHP_ALPINE=83
-
 ...
 ENV PHP_V="php83"
 ```
@@ -99,7 +97,7 @@ define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 ```
 
-## Content
+## Structure
 
 Directories and main files on a tree architecture description
 ```
@@ -118,32 +116,33 @@ Directories and main files on a tree architecture description
 │
 ├── resources
 │   ├── database
-│   │   └── wordpress.sql
+│   │   ├── wordpress.sql
+│   │   └── wordpress-backup.sql
 │   │
 │   ├── plugin
 │   │   ├── dev
-│   │   ├── {plugin-version}
-│   │   └── {plugin-version}.zip
+│   │   ├── (plugin-version)
+│   │   └── (plugin-version).zip
 │   │
 │   ├── theme
 │   │   ├── dev
-│   │   ├── {theme-version}
-│   │   └── {theme-version}.zip
+│   │   ├── (theme-version)
+│   │   └── (theme-version).zip
 │   │
 │   └── wordpress
-│       └── any file or directory required for the re-build of the wordpress app...
+│       └── (any file or directory required for the re-build of the wordpress app...)
 │
 ├── wordpress
-│   └── application...
+│   └── (application...)
 │
-├── .env (must be created manually)
+├── .env
 ├── .env.example
 └── Makefile
 ```
 
-## Automatization with Makefile
+## Automation with Makefile
 
-*I strongly recommend to use Makefile on Windows: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
+*On Windows - I recommend to use Makefile: https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
 
 Makefile recipies
 ```bash
@@ -175,18 +174,7 @@ Makefile  project-destroy          stops and removes both Wordpress and database
 Makefile  repo-flush               clears local git repository cache specially to update .gitignore
 ```
 
-### Local machine IP
-
-Checkout local machine IP to set connection between containers
-```bash
-$ make hostname
-
-192.168.1.41
-```
-
-**Before running the project** checkout database connection using a database mysql client and update [wordpress/wp-config.php](wordpress/wp-config.php) as above description.
-
-### Build project
+## Build the project
 ```bash
 $ make project-build
 
@@ -211,7 +199,16 @@ WORDPRESS_DB docker-compose.yml .env file has been set.
  ✔ Container wp-app        Started
 ```
 
-### Run project
+**Before running the project** checkout database connection using a database mysql client and update [wordpress/wp-config.php](wordpress/wp-config.php)
+
+Checkout local machine IP to set connection between containers using the following makefile recipe
+```bash
+$ make hostname
+
+192.168.1.41
+```
+
+## Run the project
 
 ```bash
 $ make project-start
@@ -222,24 +219,45 @@ $ make project-start
  ✔ Container wp-app  Running
 ```
 
-Now it should be available Wordpress by visiting http://localhost:8888/wp-admin/
+Now, Wordpress should be available by visiting [http://localhost:8888/index.php](http://localhost:8888/index.php)
 
-### Database replace
+## Database
 
-It can be set a fresh Wordpress database from installation however this repository comes with a database backup with http://localhost:8888 setting
-```bash
-$ make database-replace
+Since every the containers are up and running, a fresh Wordpress wizard setup is set. So, you can continue to set up a Wordpress configuration as your project requires.
 
-WORDPRESS database has been installed.
-```
-- User: admin
-- Password: 123456
+Follow the next process recommendation to keep development stages clear and safe.
 
-### Database backup
+Once Wordpres is up an an admin back-office user set, I recommend to make a database backup a manually saving it as [resources/database/wordpress.sql](resources/database/wordpress.sql) to have a init database for any Docker compose rebuild / restart.
 
-When Wordpress project is already in development stage copying a backup is recommended to avoid start again from installation
+The following three commands are very useful for CI/CD.
+
+### DB Backup
+
+When Wordpress project is already in an advanced development stages making a backup is recommended to avoid start again from installation wizard and keep lastest database registers.
 ```bash
 $ make database-backup
 
-WORDPRESS database has been downloaded.
+WORDPRESS database backup has been created.
+```
+
+### DB Install
+
+If it is needed to restart project from base, you can use a init database .sql file to start from installation point in time.
+```bash
+$ make database-install
+
+WORDPRESS database has been installed.
+```
+
+For this repository, by default comes with a main admin user:
+- User: admin
+- Password: 123456
+
+### DB Replace
+
+Install the latest .sql backup into current development stage.
+```bash
+$ make database-replace
+
+WORDPRESS database has been replaced.
 ```
