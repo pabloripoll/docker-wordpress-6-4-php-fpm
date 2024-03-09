@@ -177,13 +177,6 @@ WORDPRESS_DB docker-compose.yml .env file has been set.
  ✔ Container wp-app        Started
 ```
 
-**Before running the project** checkout database connection health using a database mysql client.
-
-- [MySQL Workbench](https://www.mysql.com/products/workbench/)
-- [DBeaver](https://dbeaver.io/)
-- [HeidiSQL](https://www.heidisql.com/)
-- Or whatever you like. This Docker project doesn't come with [PhpMyAdmin](https://www.phpmyadmin.net/) to make it lighter.
-
 Checkout local machine IP to set connection between containers using the following makefile recipe
 ```bash
 $ make hostname
@@ -191,6 +184,14 @@ $ make hostname
 192.168.1.41
 ```
 
+**Before running the project** checkout database connection health using a database mysql client.
+
+- [MySQL Workbench](https://www.mysql.com/products/workbench/)
+- [DBeaver](https://dbeaver.io/)
+- [HeidiSQL](https://www.heidisql.com/)
+- Or whatever you like. This Docker project doesn't come with [PhpMyAdmin](https://www.phpmyadmin.net/) to make it lighter.
+
+## Wordpress DB Connection
 Open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
 
 ```php
@@ -213,7 +214,7 @@ define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 ```
 
-## Run the project
+## Running the project
 
 ```bash
 $ make project-start
@@ -224,7 +225,7 @@ $ make project-start
  ✔ Container wp-app  Running
 ```
 
-Now, Wordpress should be available by visiting [http://localhost:8888/index.php](http://localhost:8888/index.php)
+Now, Wordpress should be available on local machine by visiting [http://localhost:8888/index.php](http://localhost:8888/index.php)
 
 ## Database
 
