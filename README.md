@@ -179,6 +179,11 @@ WORDPRESS_DB docker-compose.yml .env file has been set.
 
 **Before running the project** checkout database connection health using a database mysql client.
 
+- [MySQL Workbench](https://www.mysql.com/products/workbench/)
+- [DBeaver](https://dbeaver.io/)
+- [HeidiSQL](https://www.heidisql.com/)
+- Or whatever you like. This Docker project doesn't come with [PhpMyAdmin](https://www.phpmyadmin.net/) to make it lighter.
+
 Checkout local machine IP to set connection between containers using the following makefile recipe
 ```bash
 $ make hostname
@@ -186,9 +191,7 @@ $ make hostname
 192.168.1.41
 ```
 
-#### Docker container for Wordpress configuration
-
-Having the Host IP, open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
+Open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
 
 ```php
 /** The name of the database for WordPress */
