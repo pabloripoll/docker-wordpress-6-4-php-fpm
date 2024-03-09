@@ -105,7 +105,7 @@ rebuild:
 .PHONY: sql-install sql-install sql-backup
 
 sql-install:
-	sudo docker exec -i $(PROJECT_DB_CONT) sh -c 'exec mysql $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' < $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME).sql
+	sudo docker exec -i $(PROJECT_DB_CONT) sh -c 'exec mysql $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' < $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME)-init.sql
 
 sql-replace:
 	sudo docker exec -i $(PROJECT_DB_CONT) sh -c 'exec mysql $(PROJECT_DB_NAME) -uroot -p"$(PROJECT_DB_ROOT)"' < $(PROJECT_DB_PATH)/$(PROJECT_DB_NAME)-backup.sql
