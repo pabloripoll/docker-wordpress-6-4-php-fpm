@@ -235,7 +235,7 @@ Follow the next practices recommendation to keep development stages clear and sa
 
 *On first installation* once Wordpres app is running with an admin back-office user set, I recommend to make a database backup a manually saving it as [resources/database/wordpress.sql](resources/database/wordpress.sql) to have a init database for any Docker compose rebuild / restart for next time.
 
-The following three commands are very useful for CI/CD.
+The following three commands are very useful for *Continue Development*.
 
 ### DB Backup
 
