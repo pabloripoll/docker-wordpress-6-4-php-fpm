@@ -106,7 +106,7 @@ Directories and main files on a tree architecture description
 │   │   └── (theme-version).zip
 │   │
 │   └── wordpress
-│       └── (any file or directory required for the re-build of the wordpress app...)
+│       └── (any file or directory required for re-building the Wordpress app...)
 │
 ├── wordpress
 │   └── (application...)
