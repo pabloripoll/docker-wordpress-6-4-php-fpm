@@ -45,11 +45,11 @@ Repository: https://github.com/pabloripoll/docker-wordpress-6.4-php-8
 
 ## About
 
-The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a start up application with the basic enviroment features to deploy a php service running with Nginx and PHP-FPM in a container for Wordpress and another container with a MySQL database to follow the best practices on an easy scenario to understand and modify at development requirements.
+The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a start up application with the basic enviroment features to deploy a php service running with Nginx and PHP-FPM in a container for Wordpress and another container with a MySQL database to follow the best practices on an easy scenario to understand and modify on development requirements.
 
-The configuration for the connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge.
+The connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge configuration.
 
-To access the containers as client it can be done through `localhost:${PORT}` but the connection between containers is through the `${HOSTNAME}:${PORT}`.
+As client end user both services can be accessed through `localhost:${PORT}` but the connection between containers is through the `${HOSTNAME}:${PORT}`.
 
 #### Containers on Windows systems
 
@@ -243,7 +243,7 @@ Every time the containers are built or up and running it will be like start from
 
 So, you can follow the Wordpress Wizard steps to configure the project at requirements *(language, ip and port, etc)* with fresh database tables.
 
-On he other hand, you can continue using this repository with the pre-set database executing the command `$ make database-install`
+On the other hand, you can continue using this repository with the pre-set database executing the command `$ make database-install`
 
 Follow the next recommendations to keep development stages clear and safe.
 
