@@ -269,9 +269,7 @@ $ make database-install
 WORDPRESS database has been installed.
 ```
 
-This repository comes with an initialized .sql with a main admin user:
-- User: admin
-- Password: 123456
+This repository comes with an initialized .sql with a main database user. See [.env.example](.env.example)
 
 ### DB Replace
 
