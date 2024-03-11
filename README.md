@@ -1,15 +1,51 @@
+<div style="width:100%;float:left;clear:both;margin-bottom:50px;">
+    <a href="https://github.com/pabloripoll?tab=repositories">
+        <img
+            style="width:150px;float:left;"
+            src="https://pabloripoll.com/files/logo-light-100x300.png"/>
+    </a>
+</div>
+
 # Wordpress 6.4 with PHP FPM 8+
 
 Docker container image for Wordpress development
 
+The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a start up application with the basic enviroment features to deploy a php service running with Nginx and PHP-FPM in a container for [WordPress](https://wordpress.org) and another container with a MySQL database to follow the best practices on an easy scenario to understand and modify on development requirements.
+
+The connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge configuration.
+
+As client end user both services can be accessed through `localhost:${PORT}` but the connection between containers is through the `${HOSTNAME}:${PORT}`.
+
+### Laravel Docker Container Service
+
 - [Wordpress 6.4](https://wordpress.org/download/releases/6-4/)
 
-- [PHP-FPM 8.3](https://www.php.net/releases/8.3/en.php) - by default
+- [PHP-FPM 8.3](https://www.php.net/releases/8.3/en.php)
 
 - [Nginx 1.24](https://nginx.org/)
 
 - [Alpine Linux 3.19](https://www.alpinelinux.org/)
 
+### MariaDB Docker Container Service
+
+- [MariaDB 10.11](https://mariadb.com/kb/en/changes-improvements-in-mariadb-1011/)
+
+- [Alpine Linux 3.19](https://www.alpinelinux.org/)
+
+### Project objetives with Docker
+
+* Built on the lightweight and secure Alpine 3.19 [2024 release](https://www.alpinelinux.org/posts/Alpine-3.19.1-released.html) Linux distribution
+* Multi-platform, supporting AMD4, ARMv6, ARMv7, ARM64
+* Very small Docker image size (+/-40MB)
+* Uses PHP 8.3 as default for the best performance, low CPU usage & memory footprint, but also can be downgraded till PHP 8.0
+* Optimized for 100 concurrent users
+* Optimized to only use resources when there's traffic (by using PHP-FPM's `on-demand` process manager)
+* The services Nginx, PHP-FPM and supervisord run under a project-privileged user to make it more secure
+* The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
+* Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
+* Services independence to connect Laravel to other database allocation
+
+## PHP config
 
 To use a different PHP 8 version the following [Dockerfile](docker/nginx-php/docker/Dockerfile) arguments and variable must be modified:
 ```Dockerfile
@@ -26,30 +62,6 @@ And must be inform to [Supervisor Config](docker/nginx-php/docker/config/supervi
 command=php-fpm83 -F
 ...
 ```
-
-Repository: https://github.com/pabloripoll/docker-wordpress-6.4-php-8
-
-* Built on the lightweight and secure Alpine Linux distribution
-* Multi-platform, supporting AMD4, ARMv6, ARMv7, ARM64
-* Very small Docker image size (+/-40MB)
-* Uses PHP 8.3 for the best performance, low CPU usage & memory footprint
-* Optimized for 100 concurrent users
-* Optimized to only use resources when there's traffic (by using PHP-FPM's `on-demand` process manager)
-* The services Nginx, PHP-FPM and supervisord run under a non-privileged user (nobody) to make it more secure
-* The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
-* Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
-
-*At the moment, this repository does not include other services like message broker or mailing, etc.*
-
-## [![Personal Page](https://pabloripoll.com/files/logo-light-100x300.png)](https://github.com/pabloripoll?tab=repositories)
-
-## About
-
-The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a start up application with the basic enviroment features to deploy a php service running with Nginx and PHP-FPM in a container for Wordpress and another container with a MySQL database to follow the best practices on an easy scenario to understand and modify on development requirements.
-
-The connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge configuration.
-
-As client end user both services can be accessed through `localhost:${PORT}` but the connection between containers is through the `${HOSTNAME}:${PORT}`.
 
 #### Containers on Windows systems
 
