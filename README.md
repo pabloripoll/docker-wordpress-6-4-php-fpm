@@ -45,7 +45,7 @@ As client end user both services can be accessed through `localhost:${PORT}` but
 * Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
 * Services independence to connect Laravel to other database allocation
 
-## PHP config
+#### PHP config
 
 To use a different PHP 8 version the following [Dockerfile](docker/nginx-php/docker/Dockerfile) arguments and variable must be modified:
 ```Dockerfile
