@@ -43,7 +43,7 @@ As client end user both services can be accessed through `localhost:${PORT}` but
 * The services Nginx, PHP-FPM and supervisord run under a project-privileged user to make it more secure
 * The logs of all the services are redirected to the output of the Docker container (visible with `docker logs -f <container name>`)
 * Follows the KISS principle (Keep It Simple, Stupid) to make it easy to understand and adjust the image to your needs
-* Services independence to connect Laravel to other database allocation
+* Services independence to connect WordPress to other database allocation
 
 #### PHP config
 
@@ -126,7 +126,7 @@ Directories and main files on a tree architecture description
 │   │   └── (theme-version).zip
 │   │
 │   └── wordpress
-│       └── (any file or directory required for re-building the Wordpress app...)
+│       └── (any file or directory required for re-building the app...)
 │
 ├── wordpress
 │   └── (application...)
@@ -137,6 +137,8 @@ Directories and main files on a tree architecture description
 ```
 
 ## Automation with Makefile
+
+Makefiles are often used to automate the process of building and compiling software on Unix-based systems as Linux and macOS.
 
 *On Windows - I recommend to use Makefile: \
 https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows*
@@ -173,6 +175,30 @@ Makefile  project-destroy          stops and removes both Wordpress and database
 Makefile  repo-flush               clears local git repository cache specially to update .gitignore
 ```
 
+Checkout local machine ports availability
+```bash
+$ make ports-check
+
+Checking configuration for WORDPRESS container:
+WORDPRESS > port:8888 is free to use.
+Checking configuration for WORDPRESS DB container:
+WORDPRESS DB > port:8889 is free to use.
+```
+
+Checkout local machine IP to set connection between containers using the following makefile recipe
+```bash
+$ make hostname
+
+192.168.1.41
+```
+
+**Before running the project** checkout database connection health using a database mysql client.
+
+- [MySQL Workbench](https://www.mysql.com/products/workbench/)
+- [DBeaver](https://dbeaver.io/)
+- [HeidiSQL](https://www.heidisql.com/)
+- Or whatever you like. This Docker project doesn't come with [PhpMyAdmin](https://www.phpmyadmin.net/) to make it lighter.
+
 ## Build the project
 ```bash
 $ make project-build
@@ -199,21 +225,7 @@ WORDPRESS DB docker-compose.yml .env file has been set.
  ✔ Container wp-app        Started
 ```
 
-Checkout local machine IP to set connection between containers using the following makefile recipe
-```bash
-$ make hostname
-
-192.168.1.41
-```
-
-**Before running the project** checkout database connection health using a database mysql client.
-
-- [MySQL Workbench](https://www.mysql.com/products/workbench/)
-- [DBeaver](https://dbeaver.io/)
-- [HeidiSQL](https://www.heidisql.com/)
-- Or whatever you like. This Docker project doesn't come with [PhpMyAdmin](https://www.phpmyadmin.net/) to make it lighter.
-
-## Wordpress DB Connection
+## Wordpress Database Connection
 Open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
 
 ```php
@@ -292,7 +304,7 @@ $ make database-replace
 WORDPRESS database has been replaced.
 ```
 
-## Notes
+#### Notes
 
 - Notice that both files in [resources/database/](resources/database/) have the database name that has been set on the main `.env` file to automate processes.
 
@@ -303,3 +315,62 @@ $ make project-set
 WORDPRESS docker-compose.yml .env file has been set.
 WORDPRESS DB docker-compose.yml .env file has been set.
 ```
+
+## Docker Info
+
+Docker container
+```bash
+$ sudo docker ps -a
+CONTAINER ID   IMAGE      COMMAND    CREATED      STATUS      PORTS                                             NAMES
+ecd27aeae010   symf...   "docker-php-entrypoi…"   3 mins...   9000/tcp, 0.0.0.0:8888->80/tcp, :::8888->80/tcp   symfony-app
+52a9994c31b0   symf...   "/init"                  4 mins...   0.0.0.0:8889->3306/tcp, :::8889->3306/tcp         symfony-db
+
+```
+
+Docker image
+```bash
+$ sudo docker images
+REPOSITORY   TAG           IMAGE ID       CREATED         SIZE
+symfony-app  symf...       373f6967199b   5 minutes ago   200MB
+symfony-db   symf...       1f1775f7e1db   6 minutes ago   333MB
+```
+
+Docker stats
+```bash
+$ sudo docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          1         1         532.2MB   0B (0%)
+Containers      1         1         25.03kB   0B (0%)
+Local Volumes   1         0         117.9MB   117.9MB (100%)
+Build Cache     39        0         10.21kB    10.21kB
+```
+
+Removing container and image generated
+```bash
+$ sudo docker system prune
+...
+Total reclaimed space: 423.4MB
+```
+*(no need for pruning volume)*
+
+## Reset configurations on the run
+In [docker/config/](docker/config/) you'll find the default configuration files for Nginx, PHP and PHP-FPM.
+
+If you want to extend or customize that you can do so by mounting a configuration file in the correct folder;
+
+Nginx configuration:
+```
+$ sudo docker run -v "`pwd`/nginx-server.conf:/etc/nginx/conf.d/server.conf" ${COMPOSE_PROJECT_NAME}
+```
+
+PHP configuration:
+```
+$ sudo docker run -v "`pwd`/php-setting.ini:/etc/php83/conf.d/settings.ini" ${COMPOSE_PROJECT_NAME}
+```
+
+PHP-FPM configuration:
+```
+$ sudo docker run -v "`pwd`/php-fpm-settings.conf:/etc/php83/php-fpm.d/server.conf" ${COMPOSE_PROJECT_NAME}
+```
+
+_Note; Because `-v` requires an absolute path I've added `pwd` in the example to return the absolute path to the current directory_
