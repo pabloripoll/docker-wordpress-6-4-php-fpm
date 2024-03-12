@@ -369,7 +369,7 @@ _Note; Because `-v` requires an absolute path I've added `pwd` in the example to
 
 ## Stop Containers
 
-Using the following Makefile recipe stops symfony and database containers keeping database persistance and as app files are binded to local it wont be any loss
+Using the following Makefile recipe stops application and database containers, keeping database persistance and application files binded without any loss
 ```bash
 $ make project-stop
 
@@ -387,7 +387,7 @@ Going to remove symfony-app
 
 ## Remove Containers
 
-To stop and remove both symfony and database containers from docker network use the following Makefile recipe
+To stop and remove both application and database containers from docker network use the following Makefile recipe
 ```bash
 $ make project-destroy
 
@@ -408,7 +408,7 @@ Going to remove symfony-app
  ✔ Network symfony-app_default  Removed
 ```
 
-The, remove the Docker images by tag name reference
+The, remove the Docker images created for containers by its tag name reference
 ```bash
 $ docker rmi $(docker images --filter=reference="*:symfony-*" -q)
 ```
