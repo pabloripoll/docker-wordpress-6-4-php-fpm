@@ -345,14 +345,6 @@ Local Volumes   1         0         117.9MB   117.9MB (100%)
 Build Cache     39        0         10.21kB    10.21kB
 ```
 
-Removing container and image generated
-```bash
-$ sudo docker system prune
-...
-Total reclaimed space: 423.4MB
-```
-*(no need for pruning volume)*
-
 ## Reset configurations on the run
 In [docker/config/](docker/config/) you'll find the default configuration files for Nginx, PHP and PHP-FPM.
 
@@ -374,3 +366,59 @@ $ sudo docker run -v "`pwd`/php-fpm-settings.conf:/etc/php83/php-fpm.d/server.co
 ```
 
 _Note; Because `-v` requires an absolute path I've added `pwd` in the example to return the absolute path to the current directory_
+
+## Stop Containers
+
+Using the following Makefile recipe stops symfony and database containers keeping database persistance and as app files are binded to local it wont be any loss
+```bash
+$ make project-stop
+
+[+] Killing 1/1
+ ✔ Container symfony-db  Killed               0.5s
+Going to remove symfony-db
+[+] Removing 1/0
+ ✔ Container symfony-db  Removed              0.0s
+[+] Killing 1/1
+ ✔ Container symfony-app  Killed              0.5s
+Going to remove symfony-app
+[+] Removing 1/0
+ ✔ Container symfony-app  Removed             0.0s
+```
+
+## Remove Containers
+
+To stop and remove both symfony and database containers from docker network use the following Makefile recipe
+```bash
+$ make project-destroy
+
+[+] Killing 1/1
+ ✔ Container symfony-db  Killed                    0.4s
+Going to remove symfony-db
+[+] Removing 1/0
+ ✔ Container symfony-db  Removed                   0.0s
+[+] Running 1/1
+ ✔ Network symfony-db_default  Removed             0.3s
+
+[+] Killing 1/1
+ ✔ Container symfony-app  Killed                   0.4s
+Going to remove symfony-app
+[+] Removing 1/0
+ ✔ Container symfony-app  Removed                  0.0s
+[+] Running 1/1
+ ✔ Network symfony-app_default  Removed
+```
+
+The, remove the Docker images by tag name reference
+```bash
+$ docker rmi $(docker images --filter=reference="*:symfony-*" -q)
+```
+
+Prune Docker system cache
+```bash
+$ sudo docker system prune
+
+...
+Total reclaimed space: 423.4MB
+```
+
+*(no need for pruning volume)*
