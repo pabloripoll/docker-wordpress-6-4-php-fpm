@@ -322,8 +322,8 @@ Docker container
 ```bash
 $ sudo docker ps -a
 CONTAINER ID   IMAGE      COMMAND    CREATED      STATUS      PORTS                                             NAMES
-ecd27aeae010   symf...   "docker-php-entrypoi…"   3 mins...   9000/tcp, 0.0.0.0:8888->80/tcp, :::8888->80/tcp   symfony-app
-52a9994c31b0   symf...   "/init"                  4 mins...   0.0.0.0:8889->3306/tcp, :::8889->3306/tcp         symfony-db
+ecd27aeae010   word...   "docker-php-entrypoi…"   3 mins...   9000/tcp, 0.0.0.0:8888->80/tcp, :::8888->80/tcp   wordpress-app
+52a9994c31b0   word...   "/init"                  4 mins...   0.0.0.0:8889->3306/tcp, :::8889->3306/tcp         wordpress-db
 
 ```
 
@@ -331,8 +331,8 @@ Docker image
 ```bash
 $ sudo docker images
 REPOSITORY   TAG           IMAGE ID       CREATED         SIZE
-symfony-app  symf...       373f6967199b   5 minutes ago   200MB
-symfony-db   symf...       1f1775f7e1db   6 minutes ago   333MB
+word...-app  word...       373f6967199b   5 minutes ago   200MB
+word...-db   word...       1f1775f7e1db   6 minutes ago   333MB
 ```
 
 Docker stats
@@ -342,7 +342,7 @@ TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
 Images          1         1         532.2MB   0B (0%)
 Containers      1         1         25.03kB   0B (0%)
 Local Volumes   1         0         117.9MB   117.9MB (100%)
-Build Cache     39        0         10.21kB    10.21kB
+Build Cache     39        0         10.21kB   10.21kB
 ```
 
 ## Reset configurations on the run
@@ -374,15 +374,15 @@ Using the following Makefile recipe stops application and database containers, k
 $ make project-stop
 
 [+] Killing 1/1
- ✔ Container symfony-db  Killed               0.5s
-Going to remove symfony-db
+ ✔ Container wordpress-db  Killed               0.5s
+Going to remove wordpress-db
 [+] Removing 1/0
- ✔ Container symfony-db  Removed              0.0s
+ ✔ Container wordpress-db  Removed              0.0s
 [+] Killing 1/1
- ✔ Container symfony-app  Killed              0.5s
-Going to remove symfony-app
+ ✔ Container wordpress-app  Killed              0.5s
+Going to remove wordpress-app
 [+] Removing 1/0
- ✔ Container symfony-app  Removed             0.0s
+ ✔ Container wordpress-app  Removed             0.0s
 ```
 
 ## Remove Containers
@@ -392,25 +392,25 @@ To stop and remove both application and database containers from docker network 
 $ make project-destroy
 
 [+] Killing 1/1
- ✔ Container symfony-db  Killed                    0.4s
-Going to remove symfony-db
+ ✔ Container wordpress-db  Killed                    0.4s
+Going to remove wordpress-db
 [+] Removing 1/0
- ✔ Container symfony-db  Removed                   0.0s
+ ✔ Container wordpress-db  Removed                   0.0s
 [+] Running 1/1
- ✔ Network symfony-db_default  Removed             0.3s
+ ✔ Network wordpress-db_default  Removed             0.3s
 
 [+] Killing 1/1
- ✔ Container symfony-app  Killed                   0.4s
-Going to remove symfony-app
+ ✔ Container wordpress-app  Killed                   0.4s
+Going to remove wordpress-app
 [+] Removing 1/0
- ✔ Container symfony-app  Removed                  0.0s
+ ✔ Container wordpress-app  Removed                  0.0s
 [+] Running 1/1
- ✔ Network symfony-app_default  Removed
+ ✔ Network wordpress-app_default  Removed
 ```
 
 The, remove the Docker images created for containers by its tag name reference
 ```bash
-$ docker rmi $(docker images --filter=reference="*:symfony-*" -q)
+$ docker rmi $(docker images --filter=reference="*:wordpress-*" -q)
 ```
 
 Prune Docker system cache
