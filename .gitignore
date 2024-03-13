@@ -26,6 +26,8 @@ dist-ssr
 
 Docs.md
 READ-II.md
-/resources/plugin
-/resources/theme
+/resources/plugin/dev
+/resources/plugin/pr-custom
+/resources/theme/bs-blog
+/resources/theme/bs-shop
 /wordpress/wp-content/plugins/pr-custom
