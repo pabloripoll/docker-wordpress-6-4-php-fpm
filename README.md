@@ -6,7 +6,7 @@
     </a>
 </div>
 
-# Wordpress 6.4 with PHP FPM 8+
+# Docker Wordpress 6.4 with PHP FPM 8+ and MariaDB 10.11
 
 Docker container image for Wordpress development
 
