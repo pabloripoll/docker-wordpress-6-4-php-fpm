@@ -25,7 +25,7 @@ DOCKER_COMPOSE?=$(DOCKER_USER) docker compose
 DOCKER_COMPOSE_RUN=$(DOCKER_COMPOSE) run --rm
 DOCKER_EXEC_TOOLS_APP=$(DOCKER_USER) docker exec -it $(DOCKER_CAAS) sh
 
-COMPOSER_INSTALL="composer update"
+COMPOSER_UPDATE="composer update"
 
 help: ## shows this Makefile help message
 	echo 'usage: make [target]'
@@ -70,16 +70,13 @@ env-set: ## sets docker .env file
 # -------------------------------------------------------------------------------------------------
 #  Container
 # -------------------------------------------------------------------------------------------------
-.PHONY: ssh build install dev up start first stop restart clear
+.PHONY: ssh build install-app update-app dev up start first stop restart clear
 
 ssh:
 	$(DOCKER_EXEC_TOOLS_APP)
 
 build:
 	cd docker && $(DOCKER_COMPOSE) up --build --no-recreate -d
-
-install:
-	cd docker && $(DOCKER_EXEC_TOOLS_APP) -c $(COMPOSER_INSTALL)
 
 dev:
 	echo ${C_YEL}"\"dev\" recipe has not usage in this project"${C_END};
@@ -88,17 +85,41 @@ up:
 	cd docker && $(DOCKER_COMPOSE) up -d
 
 start:
-	$(MAKE) build up
-
-first:
-	$(MAKE) build install up
+	$(MAKE) up
 
 stop:
-	cd docker && $(DOCKER_COMPOSE) kill || true
-	cd docker && $(DOCKER_COMPOSE) rm --force || true
+	cd docker && $(DOCKER_COMPOSE) stop
 
 restart:
 	$(MAKE) stop start
 
 clear:
+	cd docker && $(DOCKER_COMPOSE) kill || true
+	cd docker && $(DOCKER_COMPOSE) rm --force || true
 	cd docker && $(DOCKER_COMPOSE) down -v --remove-orphans || true
+
+destroy:
+	cd docker && $(DOCKER_USER) docker rmi $(DOCKER_CAAS):$(DOCKER_ABBR)-nginx-php
+
+# -------------------------------------------------------------------------------------------------
+#  Container Application
+# -------------------------------------------------------------------------------------------------
+app-install:
+	curl https://wordpress.org/wordpress-6.4.3.zip -O -J -L
+
+app-update:
+	$(DOCKER_EXEC_TOOLS_APP) -c $(COMPOSER_UPDATE)
+
+# -------------------------------------------------------------------------------------------------
+#  Container update on the run
+# -------------------------------------------------------------------------------------------------
+.PHONY: nginx-conf php-conf php-fpm-conf
+
+nginx-conf:
+	$(DOCKER_USER) docker run -v "`pwd`/nginx-server.conf:/etc/nginx/conf.d/server.conf" $(DOCKER_CAAS):$(DOCKER_ABBR)-nginx-php
+
+php-conf:
+	$(DOCKER_USER) docker run -v "`pwd`/php-setting.ini:/etc/php83/conf.d/settings.ini" $(DOCKER_CAAS)
+
+php-fpm-conf:
+	$(DOCKER_USER) docker run -v "`pwd`/php-fpm-settings.conf:/etc/php83/php-fpm.d/server.conf" $(DOCKER_CAAS)

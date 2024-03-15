@@ -38,33 +38,30 @@ ports-check: ## shows this project ports availability on local machine
 	cd docker/mariadb && $(MAKE) port-check
 
 # -------------------------------------------------------------------------------------------------
-#  Wordpress
+#  WordPress Service
 # -------------------------------------------------------------------------------------------------
-.PHONY: wordpress-download wordpress-ssh wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
+.PHONY: wordpress-ssh wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
 
-wordpress-download: ## dowloads the Wordpress zip source into project root
-	curl https://wordpress.org/wordpress-6.4.3.zip -O -J -L
-
-wordpress-ssh: ## enters the Wordpress container shell
+wordpress-ssh: ## enters the WordPress container shell
 	cd docker/nginx-php && $(MAKE) ssh
 
-wordpress-set: ## sets the Wordpress PHP enviroment file to build the container
+wordpress-set: ## sets the WordPress PHP enviroment file to build the container
 	cd docker/nginx-php && $(MAKE) env-set
 
-wordpress-build: ## builds the Wordpress PHP container from Docker image
+wordpress-build: ## builds the WordPress PHP container from Docker image
 	cd docker/nginx-php && $(MAKE) build
 
-wordpress-start: ## starts up the Wordpress PHP container running
-	cd docker/nginx-php && $(MAKE) up
+wordpress-start: ## starts up the WordPress PHP container running
+	cd docker/nginx-php && $(MAKE) start
 
-wordpress-stop: ## stops the Wordpress PHP container but data won't be destroyed
+wordpress-stop: ## stops the WordPress PHP container but data won't be destroyed
 	cd docker/nginx-php && $(MAKE) stop
 
-wordpress-destroy: ## stops and removes the Wordpress PHP container from Docker network destroying its data
-	cd docker/nginx-php && $(MAKE) stop clear
+wordpress-destroy: ## removes the WordPress PHP from Docker network destroying its data and Docker image
+	cd docker/nginx-php && $(MAKE) clear destroy
 
 # -------------------------------------------------------------------------------------------------
-#  Wordpress - MariaDB Database
+#  Database Service
 # -------------------------------------------------------------------------------------------------
 .PHONY: database-ssh database-set database-build database-start database-stop database-destroy database-replace database-backup
 
@@ -99,32 +96,24 @@ database-backup: ## creates a .sql file from container database to the determine
 	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database "${C_GRN}"backup has been created."${C_END};
 
 # -------------------------------------------------------------------------------------------------
-#  Wordpress Project
+#  WordPress & Database
 # -------------------------------------------------------------------------------------------------
 .PHONY: project-set project-build project-start project-stop project-destroy
 
-project-set: ## sets both Wordpress and database .env files used by docker-compose.yml
+project-set: ## sets both WordPress and database .env files used by docker-compose.yml
 	$(MAKE) wordpress-set database-set
 
-project-build: ## builds both Wordpress and database containers from their Docker images
+project-build: ## builds both WordPress and database containers from their Docker images
 	$(MAKE) wordpress-set database-set database-build wordpress-build
 
-project-start: ## starts up both Wordpress and database containers running
+project-start: ## starts up both WordPress and database containers running
 	$(MAKE) database-start wordpress-start
 
-project-stop: ## stops both Wordpress and database containers but data won't be destroyed
+project-stop: ## stops both WordPress and database containers but data won't be destroyed
 	$(MAKE) database-stop wordpress-stop
 
-project-destroy: ## stops and removes both Wordpress and database containers from Docker network destroying their data
+project-destroy: ## stops and removes both WordPress and database containers from Docker network destroying their data
 	$(MAKE) database-destroy wordpress-destroy
-
-# -------------------------------------------------------------------------------------------------
-#  Wordpress Example Plugin
-# -------------------------------------------------------------------------------------------------
-.PHONY: plugin-zip
-
-plugin-zip:
-	cd resources/plugin/dev && zip -r ../pr-custom.zip *
 
 # -------------------------------------------------------------------------------------------------
 #  Repository Helper
