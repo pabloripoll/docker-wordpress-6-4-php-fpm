@@ -29,91 +29,59 @@ help: ## shows this Makefile help message
 
 hostname: ## shows local machine ip
 	echo $(word 1,$(shell hostname -I))
+	echo $(ip addr show | grep "\binet\b.*\bdocker0\b" | awk '{print $2}' | cut -d '/' -f 1)
 
 fix-permission: ## sets project directory permission
 	$(DOCKER_USER) chown -R ${USER}: $(ROOT_DIR)/
 
-ports-check: ## shows this project ports availability on local machine
+host-check: ## shows this project ports availability on local machine
 	cd docker/nginx-php && $(MAKE) port-check
-	cd docker/mariadb && $(MAKE) port-check
 
 # -------------------------------------------------------------------------------------------------
-#  WordPress Service
+#  Application Service
 # -------------------------------------------------------------------------------------------------
-.PHONY: wordpress-ssh wordpress-set wordpress-build wordpress-start wordpress-stop wordpress-destroy
+.PHONY: wordpress-ssh wordpress-set wordpress-create wordpress-start wordpress-stop wordpress-destroy wordpress-install wordpress-update
 
-wordpress-ssh: ## enters the WordPress container shell
+wordpress-ssh: ## enters the application container shell
 	cd docker/nginx-php && $(MAKE) ssh
 
-wordpress-set: ## sets the WordPress PHP enviroment file to build the container
+wordpress-set: ## sets the application PHP enviroment file to build the container
 	cd docker/nginx-php && $(MAKE) env-set
 
-wordpress-build: ## builds the WordPress PHP container from Docker image
-	cd docker/nginx-php && $(MAKE) build
+wordpress-create: ## creates the application PHP container from Docker image
+	cd docker/nginx-php && $(MAKE) env-set build up
 
-wordpress-start: ## starts up the WordPress PHP container running
+wordpress-start: ## starts the application PHP container running
 	cd docker/nginx-php && $(MAKE) start
 
-wordpress-stop: ## stops the WordPress PHP container but data won't be destroyed
+wordpress-stop: ## stops the application PHP container but data will not be destroyed
 	cd docker/nginx-php && $(MAKE) stop
 
-wordpress-destroy: ## removes the WordPress PHP from Docker network destroying its data and Docker image
+wordpress-destroy: ## removes the application PHP from Docker network destroying its data and Docker image
 	cd docker/nginx-php && $(MAKE) clear destroy
 
-# -------------------------------------------------------------------------------------------------
-#  Database Service
-# -------------------------------------------------------------------------------------------------
-.PHONY: database-ssh database-set database-build database-start database-stop database-destroy database-replace database-backup
+wordpress-install: ## installs the application pre-defined version with its dependency packages into container
+	cd docker/nginx-php && $(MAKE) app-install
 
-database-ssh: ## enters the database container shell
-	cd docker/mariadb && $(MAKE) ssh
-
-database-set: ## sets the database enviroment file to build the container
-	cd docker/mariadb && $(MAKE) env-set
-
-database-build: ## builds the database container from Docker image
-	cd docker/mariadb && $(MAKE) build
-
-database-start: ## starts up the database container running
-	cd docker/mariadb && $(MAKE) up
-
-database-stop: ## stops the database container but data won't be destroyed
-	cd docker/mariadb && $(MAKE) stop
-
-database-destroy: ## stops and removes the database container from Docker network destroying its data
-	cd docker/mariadb && $(MAKE) stop clear
-
-database-install: ## installs an initialized database copying the determined .sql file into the container by raplacing it
-	cd docker/mariadb && $(MAKE) sql-install
-	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database has been "${C_GRN}"installed."${C_END};
-
-database-replace: ## replaces container database copying the determined .sql file into the container by raplacing it
-	cd docker/mariadb && $(MAKE) sql-replace
-	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database has been "${C_GRN}"replaced."${C_END};
-
-database-backup: ## creates a .sql file from container database to the determined local host directory
-	cd docker/mariadb && $(MAKE) sql-backup
-	echo ${C_BLU}"$(DOCKER_TITLE)"${C_END}" database "${C_GRN}"backup has been created."${C_END};
+wordpress-update: ## updates the application dependency packages into container
+	cd docker/nginx-php && $(MAKE) app-update
 
 # -------------------------------------------------------------------------------------------------
-#  WordPress & Database
+#  Database Container Service
 # -------------------------------------------------------------------------------------------------
-.PHONY: project-set project-build project-start project-stop project-destroy
+.PHONY: database-install database-replace database-backup
 
-project-set: ## sets both WordPress and database .env files used by docker-compose.yml
-	$(MAKE) wordpress-set database-set
+database-install: ## installs into container database the init sql file from resources/database
+	sudo docker exec -i $(DB_CAAS) sh -c 'exec mysql $(DB_NAME) -uroot -p"$(DB_ROOT)"' < $(DB_BACKUP_PATH)/$(DB_BACKUP_NAME)-init.sql
+	echo ${C_YEL}"DATABASE"${C_END}" has been installed."
 
-project-build: ## builds both WordPress and database containers from their Docker images
-	$(MAKE) wordpress-set database-set database-build wordpress-build
+database-replace: ## replaces container database with the latest sql backup file from resources/database
+	sudo docker exec -i $(DB_CAAS) sh -c 'exec mysql $(DB_NAME) -uroot -p"$(DB_ROOT)"' < $(DB_BACKUP_PATH)/$(DB_BACKUP_NAME)-backup.sql
+	echo ${C_YEL}"DATABASE"${C_END}" has been replaced."
 
-project-start: ## starts up both WordPress and database containers running
-	$(MAKE) database-start wordpress-start
-
-project-stop: ## stops both WordPress and database containers but data won't be destroyed
-	$(MAKE) database-stop wordpress-stop
-
-project-destroy: ## stops and removes both WordPress and database containers from Docker network destroying their data
-	$(MAKE) database-destroy wordpress-destroy
+database-backup: ## creates / replace a sql backup file from container database in resources/database
+	sudo docker exec $(DB_CAAS) sh -c 'exec mysqldump $(DB_NAME) -uroot -p"$(DB_ROOT)"' > $(DB_BACKUP_PATH)/$(DB_BACKUP_NAME)-backup.sql
+	echo ${C_YEL}"DATABASE"${C_END}" backup has been created."
 
 # -------------------------------------------------------------------------------------------------
 #  Repository Helper

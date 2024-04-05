@@ -6,15 +6,11 @@
 
 # Docker Wordpress 6.4 with PHP FPM 8+
 
-Docker container image for Wordpress development
+The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a "ready to use" container with the basic enviroment features to deploy a [WordPress](https://wordpress.org) application service under a lightweight Linux Alpine image with Nginx server platform and [PHP-FPM](https://www.php.net/manual/en/install.fpm.php) for development stage requirements.
 
-The objective of this repository is having a CaaS [Containers as a Service](https://www.ibm.com/topics/containers-as-a-service) to provide a start up application with the basic enviroment features to deploy a php service running with Nginx and PHP-FPM in a container for [WordPress](https://wordpress.org) and another container with a MySQL database to follow the best practices on an easy scenario to understand and modify on development requirements.
+The container configuration is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0` as [Bridge network](https://docs.docker.com/network/drivers/bridge/), thus it can be accessed through `localhost:${PORT}` by browsers but to connect with it or this with other services `${HOSTNAME}:${PORT}` will be required.
 
-The connection between container is as [Host Network](https://docs.docker.com/network/drivers/host/) on `eth0`, thus both containers do not share networking or bridge configuration.
-
-As client end user both services can be accessed through `localhost:${PORT}` but the connection between containers is through the `${HOSTNAME}:${PORT}`.
-
-### Laravel Docker Container Service
+### Wordpress Docker Container Service
 
 - [Wordpress 6.4](https://wordpress.org/download/releases/6-4/)
 
@@ -26,7 +22,9 @@ As client end user both services can be accessed through `localhost:${PORT}` but
 
 ### Database Container Service
 
-To connect this service to a SQL database, it can be used the following [MariaDB 10.11](https://mariadb.com/kb/en/changes-improvements-in-mariadb-1011/) service:
+This project does not include a database service for it is intended to connect to a database instance like in a cloud database environment or similar.
+
+To emulate a SQL database service it can be used the following [MariaDB 10.11](https://mariadb.com/kb/en/changes-improvements-in-mariadb-1011/) repository:
 - [https://github.com/pabloripoll/docker-mariadb-10.11](https://github.com/pabloripoll/docker-mariadb-10.11)
 
 ### Project objetives with Docker
@@ -98,9 +96,13 @@ Directories and main files on a tree architecture description
 │
 ├── docker
 │   └── nginx-php
-│       ├── ...
-│       ├── .env.example
-│       └── docker-compose.yml
+│       └── docker
+│       │   ├── config
+│       │   ├── .env
+│       │   ├── docker-compose.yml
+│       │   └── Dockerfile
+│       │
+│       └── Makefile
 │
 ├── resources
 │   ├── database
@@ -141,65 +143,190 @@ $ make help
 usage: make [target]
 
 targets:
-Makefile  help                     shows this Makefile help message
-Makefile  hostname                 shows local machine ip
-Makefile  fix-permission           sets project directory permission
-Makefile  ports-check              shows this project ports availability on local machine
-Makefile  wordpress-ssh            enters the Wordpress container shell
-Makefile  wordpress-set            sets the Wordpress PHP enviroment file to build the container
-Makefile  wordpress-build          builds the Wordpress PHP container from Docker image
-Makefile  wordpress-start          starts up the Wordpress PHP container running
-Makefile  wordpress-stop           stops the Wordpress PHP container but data will not be destroyed
-Makefile  wordpress-destroy        stops and removes the Wordpress PHP container from Docker network destroying its data
-Makefile  repo-flush               clears local git repository cache specially to update .gitignore
+Makefile  help                    shows this Makefile help message
+Makefile  hostname                shows local machine ip
+Makefile  fix-permission          sets project directory permission
+Makefile  host-check              shows this project ports availability on local machine
+Makefile  wordpress-ssh           enters the application container shell
+Makefile  wordpress-set           sets the application PHP enviroment file to build the container
+Makefile  wordpress-create        creates the application PHP container from Docker image
+Makefile  wordpress-start         starts the application PHP container running
+Makefile  wordpress-stop          stops the application PHP container but data will not be destroyed
+Makefile  wordpress-destroy       removes the application PHP from Docker network destroying its data and Docker image
+Makefile  wordpress-install       installs the application pre-defined version with its dependency packages into container
+Makefile  wordpress-update        updates the application dependency packages into container
+Makefile  database-install        installs into container database the init sql file from resources/database
+Makefile  database-replace        replaces container database with the latest sql backup file from resources/database
+Makefile  database-backup         creates / replace a sql backup file from container database in resources/database
+Makefile  repo-flush              clears local git repository cache specially to update .gitignore
 ```
 
-Checkout local machine ports availability
+## Service Configuration
+
+Create a [DOTENV](.env) file from [.env.example](.env.example) and setup according to your project requirement the following variables
+```
+# REMOVE COMMENTS WHEN COPY THIS FILE
+
+# Leave it empty if no need for sudo user to execute docker commands
+DOCKER_USER=sudo
+
+# Container data for docker-compose.yml
+PROJECT_TITLE="WORDPRESS"   # <- this name will be prompt for Makefile recipes
+PROJECT_ABBR="wordpress"    # <- part of the service image tag - useful if similar services are running
+
+# Wordpress container
+PROJECT_HOST="127.0.0.1"                    # <- for this project is not necessary
+PROJECT_PORT="8888"                         # <- port access container service on local machine
+PROJECT_CAAS="wp-app"                       # <- container as a service name to build service
+PROJECT_PATH="../../../wordpress"           # <- path where application is binded from container to local
+
+# Database service container
+DB_CAAS="mariadb"                           # <- name of the database docker container service to access by ssh
+DB_NAME="mariadb"                           # <- name of the database to copy or replace
+DB_ROOT="7c4a8d09ca3762af61e59520943d"      # <- database root password
+DB_BACKUP_NAME="wordpress"                    # <- the name of the database backup or copy file
+DB_BACKUP_PATH="resources/database"         # <- path where database backup or copy resides
+```
+
+Exacute the following command to create the [docker/.env](docker/.env) file, required for building the container
 ```bash
-$ make ports-check
-
-Checking configuration for WORDPRESS container:
-WORDPRESS > port:8888 is free to use.
+$ make wordpress-set
+WORPRESS docker-compose.yml .env file has been set.
 ```
 
-Checkout local machine IP to set connection between containers using the following makefile recipe
+Checkout port availability from the set enviroment
+```bash
+$ make host-check
+
+Checking configuration for WORPRESS container:
+WORPRESS > port:8888 is free to use.
+```
+
+Checkout local machine IP to set connection between container services using the following makefile recipe if required
 ```bash
 $ make hostname
 
 192.168.1.41
 ```
 
-## Build the project
+## Create the application container service
 ```bash
-$ make project-build
+$ make worpress-create
 
 WORDPRESS docker-compose.yml .env file has been set.
 
-[+] Building 49.7s (25/25)                                             docker:default
- => [wordpress internal] load build definition from Dockerfile         0.0s
- => => transferring dockerfile: 2.47kB
+[+] Building 54.3s (26/26) FINISHED                                                 docker:default
+=> [nginx-php internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 2.78kB                                              0.0s
+ => [nginx-php internal] load metadata for docker.io/library/composer:latest        1.5s
+ => [nginx-php internal] load metadata for docker.io/library/php:8.3-fpm-alpine     1.5s
+ => [nginx-php internal] load .dockerignore                                         0.0s
+ => => transferring context: 108B                                                   0.0s
+ => [nginx-php internal] load build context                                         0.0s
+ => => transferring context: 8.30kB                                                 0.0s
+ => [nginx-php] FROM docker.io/library/composer:latest@sha256:63c0f08ca41370...
 ...
-=> => naming to docker.io/library/wp-app:php-8.3                       0.0s
+ => [nginx-php] exporting to image                                                  1.0s
+ => => exporting layers                                                             1.0s
+ => => writing image sha256:3c99f91a63edd857a0eaa13503c00d500fad57cf5e29ce1d...     0.0s
+ => => naming to docker.io/library/wp-app:wp-nginx-php                              0.0s
 [+] Running 1/2
- ⠇ Network wp-app_default  Created                                     0.8s
- ✔ Container wp-app        Started
+ ⠴ Network wp-app_default  Created                                                  0.4s
+ ✔ Container wp-app        Started                                                  0.3s
+[+] Running 1/0
+ ✔ Container wp-app        Running
 ```
 
-## Wordpress Database Connection
-Open [wordpress/wp-config.php](wordpress/wp-config.php) to set the  `Database hostname`. For this example parameters comes from a created `.env` file copied from `.env.example`. *(this can be done automatically by using Composer package DOTENV)*
+If container service has been built with the application content completed, accessing by browsing [http://localhost:8888/](http://localhost:8888/) will display the successful installation wizard page.
+
+If container has been built without application, the following Makefile recipe will install the application that is configure in [docker/nginx-php/Makefile](docker/nginx-php/Makefile) service
+```bash
+$ make wordpress-install
+```
+
+## Container Information
+
+Running container on Docker
+```bash
+$ sudo docker ps -a
+CONTAINER ID   IMAGE      COMMAND    CREATED      STATUS      PORTS                                             NAMES
+ecd27aeae010   word...    "docker-php-entrypoi…"  1 min...    9000/tcp, 0.0.0.0:8888->80/tcp, :::8888->80/tcp   wp-app
+```
+
+Docker image size
+```bash
+$ sudo docker images
+REPOSITORY   TAG           IMAGE ID       CREATED         SIZE
+wp-app       word...       373f6967199b   5 minutes ago   251MB
+```
+
+Stats regarding the amount of disk space used by the container
+```bash
+$ sudo docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          1         1         251.4MB   0B (0%)
+Containers      1         1         4B        0B (0%)
+Local Volumes   1         0         117.9MB   117.9MB (100%)
+Build Cache     39        0         10.56kB   10.56kB
+```
+
+## Stopping the Container Service
+
+Using the following Makefile recipe stops application from running, keeping database persistance and application files binded without any loss
+```bash
+$ make wordpress-stop
+[+] Stopping 1/1
+ ✔ Container wp-app  Stopped                                                    0.5s
+```
+
+## Removing the Container Image
+
+To remove application container from Docker network use the following Makefile recipe *(Docker prune commands still needed to be applied manually)*
+```bash
+$ make wordpress-destroy
+
+[+] Removing 1/0
+ ✔ Container wp-app  Removed                                                     0.0s
+[+] Running 1/1
+ ✔ Network wp-app_default  Removed                                               0.4s
+Untagged: wp-app:wp-nginx-php
+Deleted: sha256:3c99f91a63edd857a0eaa13503c00d500fad57cf5e29ce1da3210765259c35b1
+```
+
+Information on pruning Docker system cache
+```bash
+$ sudo docker system prune
+
+...
+Total reclaimed space: 168.4MB
+```
+
+Information on pruning Docker volume cache
+```bash
+$ sudo docker system prune
+
+...
+Total reclaimed space: 0MB
+```
+
+## Custom database service usage
+
+In case of using the repository [https://github.com/pabloripoll/docker-mariadb-10.11](https://github.com/pabloripoll/docker-mariadb-10.11) as database service, complete the application mysql database connection params in [wordpress/wp-config.php](wordpress/wp-config.php) file.
+
+Use local hostname IP `$ make hostname` to set database host ip.
 
 ```php
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'wordpress' );
+define( 'DB_NAME', 'mariadb' );
 
 /** Database username */
-define( 'DB_USER', 'wordpress' );
+define( 'DB_USER', 'mariadb' );
 
 /** Database password */
 define( 'DB_PASSWORD', '123456' );
 
 /** Database hostname */
-define( 'DB_HOST', '192.168.1.41:8889' );
+define( 'DB_HOST', '192.168.1.41:8880' );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );
@@ -208,84 +335,56 @@ define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 ```
 
-## Running the project
+*(the above process also can be done automatically by using Composer package DOTENV - not included in this repository)*
 
+### Dumping Database
+
+Every time the containers are built up and running it will be like start from a fresh installation.
+
+You can continue using this repository with the pre-set database executing the command `$ make database-install`
+
+Follow the next recommendations to keep development stages clear and safe.
+
+*On first installation* once the app service is running with basic tables set, I suggest to make a initialization database backup manually, saving as [resources/database/wordpress-backup.sql](resources/database/wordpress-backup.sql) but renaming as [resources/database/wordpress-init.sql](resources/database/wordpress-init.sql) to have that init database for any Docker compose rebuild / restart on next time.
+
+**The following three commands are very useful for *Continue Development*.**
+
+### DB Backup
+
+When the project is already in an advanced development stage, making a backup is recommended to keep lastest database registers.
 ```bash
-$ make project-start
+$ make database-backup
 
-[+] Running 1/0
- ✔ Container wp-app  Running                      0.0s
- ```
-
-Now, Wordpress should be available on local machine by visiting [http://localhost:8888/index.php](http://localhost:8888/index.php)
-
-## Docker Info
-
-Docker container
-```bash
-$ sudo docker ps -a
-CONTAINER ID   IMAGE      COMMAND    CREATED      STATUS      PORTS                                             NAMES
-ecd27aeae010   word...   "docker-php-entrypoi…"   3 mins...   9000/tcp, 0.0.0.0:8888->80/tcp, :::8888->80/tcp   wordpress-app
-
+DATABASE backup has been created.
 ```
 
-Docker image
+### DB Install
+
+If it is needed to restart the project from base installation step, you can use the init database .sql file to restart at that point in time. Although is not common to use, helps to check and test installation health.
 ```bash
-$ sudo docker images
-REPOSITORY   TAG           IMAGE ID       CREATED         SIZE
-word...-app  word...       373f6967199b   5 minutes ago   200MB
+$ make database-install
+
+DATABASE has been installed.
 ```
 
-Docker stats
+This repository comes with an initialized .sql with a main database user. See [.env.example](.env.example)
+
+### DB Replace
+
+Replace the database set on container with the latest .sql backup into current development stage.
 ```bash
-$ sudo docker system df
-TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
-Images          1         1         532.2MB   0B (0%)
-Containers      1         1         25.03kB   0B (0%)
-Local Volumes   1         0         117.9MB   117.9MB (100%)
-Build Cache     39        0         10.21kB   10.21kB
+$ make database-replace
+
+DATABASE has been replaced.
 ```
 
-## Stop Containers
+#### Notes
 
-Using the following Makefile recipe stops application and database containers, keeping database persistance and application files binded without any loss
+- Notice that both files in [resources/database/](resources/database/) have the name that has been set on the main `.env` file to automate processes.
+
+- Remember that on any change in the main `.env` file will be required to execute the following Makefile recipe
 ```bash
-$ make project-stop
+$ make wordpress-set
 
-[+] Killing 1/1
- ✔ Container wordpress-app  Killed              0.5s
-Going to remove wordpress-app
-[+] Removing 1/0
- ✔ Container wordpress-app  Removed             0.0s
-```
-
-## Remove Containers
-
-To stop and remove both application and database containers from docker network use the following Makefile recipe
-```bash
-$ make project-destroy
-
-[+] Killing 1/1
- ✔ Container wordpress-app  Killed                   0.4s
-Going to remove wordpress-app
-[+] Removing 1/0
- ✔ Container wordpress-app  Removed                  0.0s
-[+] Running 1/1
- ✔ Network wordpress-app_default  Removed
-```
-
-Prune Docker system cache
-```bash
-$ sudo docker system prune
-
-...
-Total reclaimed space: 423.4MB
-```
-
-Prune Docker volume cache
-```bash
-$ sudo docker system prune
-
-...
-Total reclaimed space: 50.7MB
+WORDPRESS docker-compose.yml .env file has been set.
 ```
