@@ -61,10 +61,18 @@ wordpress-destroy: ## removes the application PHP from Docker network destroying
 	cd docker/nginx-php && $(MAKE) clear destroy
 
 wordpress-install: ## installs the application pre-defined version with its dependency packages into container
-	cd docker/nginx-php && $(MAKE) app-install
+	curl https://wordpress.org/wordpress-6.4.3.zip -O -J -L
 
 wordpress-update: ## updates the application dependency packages into container
 	cd docker/nginx-php && $(MAKE) app-update
+
+# -------------------------------------------------------------------------------------------------
+#  Wordpress Plugin
+# -------------------------------------------------------------------------------------------------
+.PHONY: plugin-zip
+
+plugin-zip:
+	cd resources/plugin/dev && zip -r ../pr-custom.zip *
 
 # -------------------------------------------------------------------------------------------------
 #  Database Container Service

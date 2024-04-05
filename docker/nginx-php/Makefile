@@ -108,7 +108,7 @@ dev: ## set a development enviroment
 .PHONY: app-install app-update
 
 app-install: ## installs the application an dependencies packages
-	curl https://wordpress.org/wordpress-6.4.3.zip -O -J -L
+	echo "none";
 
 app-update: ## updates dependencies packages
 	cd docker && $(DOCKER_EXEC_TOOLS_APP) -c $(APPLICATION_UPDATE)
